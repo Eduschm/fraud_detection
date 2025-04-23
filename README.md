@@ -16,7 +16,8 @@ The project is organized into several modules:
 
 ## Data
 
-The system processes banking transaction data from `fraud_data.csv`, which appears to contain information about bank transactions. During preprocessing:
+The system processes banking transaction data from `fraud_data.csv`, which contains information about bank transactions. During preprocessing:
+To download the data, access https://www.kaggle.com/datasets/amanalisiddiqui/fraud-detection-dataset/data
 
 - Identifiers (`nameOrig`, `nameDest`) and temporal data (`step`) are removed
 - Categorical variables are encoded using one-hot encoding
