@@ -1,0 +1,107 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+wheels/
+
+# Virtual environments
+venv/
+env/
+.venv/
+.virtualenv/
+ENV/
+env.bak/
+venv.bak/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Jupyter
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# Logs and temporary files
+*.log
+logs/
+*.out
+*.err
+*.tmp
+tmp/
+temp/
+*.swp
+
+# Data, datasets and databases (do not commit large or sensitive data)
+data/
+datasets/
+*.csv
+*.tsv
+*.parquet
+*.h5
+*.hdf5
+*.db
+*.sqlite3
+
+# Trained models, weights and serialized artifacts
+models/
+weights/
+*.pt
+*.pth
+*.joblib
+*.pkl
+*.sav
+*.onnx
+
+# Secrets, configs and environment files
+.env
+.env.local
+.env.*.local
+secrets.yaml
+credentials.json
+config.yaml
+local_settings.py
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Docker / local overrides
+docker-compose.override.yml
+
+# Backup / merge files
+*.orig
+
+# Misc
+.cache/
+.mypy_cache/
+.ruff_cache/
