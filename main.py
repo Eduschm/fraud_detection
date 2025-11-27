@@ -1,7 +1,7 @@
 from src.load_data import load_data
 from sklearn.model_selection import train_test_split
 from src.train import train
-from src.predict import predict
+from src.predict import ModelPredictor
 import argparse
 import uvicorn
 
@@ -19,7 +19,8 @@ def main():
     if args.mode == 'train':
         models, cv_results = train(X_train, y_train)
     elif args.mode == 'predict':
-        test_results = predict(X_test, y_test)
+        model_predictor = ModelPredictor()
+        model_predictor.evaluate_models(X_test, y_test)
 
 if __name__ == "__main__":
     uvicorn.run("app.main:FraudDetectionApp", host="0.0.0.0", port=8000, reload=True)
