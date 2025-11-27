@@ -3,6 +3,7 @@ from sklearn.model_selection import train_test_split
 from src.train import train
 from src.predict import predict
 import argparse
+import uvicorn
 
 def main():
     # Create parser to choose between train or test model
@@ -21,4 +22,5 @@ def main():
         test_results = predict(X_test, y_test)
 
 if __name__ == "__main__":
+    uvicorn.run("app.main:FraudDetectionApp", host="0.0.0.0", port=8000, reload=True)
     main()
