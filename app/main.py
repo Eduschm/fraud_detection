@@ -20,6 +20,7 @@ class FraudDetectionApp:
             samples = self.sample_data.sample(n=5).to_dict(orient='records')
             return {"samples": samples}
         
-    def predict(query_params):
+    def predict(self, query_params):
+        query_params = pd.DataFrame([query_params])
         return ModelPredictor().evaluate(query_params)
 
