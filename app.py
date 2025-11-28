@@ -77,7 +77,11 @@ elif page == "Make Prediction":
         if submitted:
             with st.spinner("Analyzing transaction..."):
                 try:
-                    X = json.loads(transaction_data)
+                    # Validate JSON format
+                    if not transaction_data.strip():
+                        st.error("Error: Input cannot be empty.")
+                    else:
+                        X = json.loads(transaction_data)
                     result = app_instance.predict(X)
                     st.success("Prediction Complete!")
                     col1, col2 = st.columns(2)
