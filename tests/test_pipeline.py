@@ -1,5 +1,5 @@
 import pytest
-from src.load_data import load_data  # ajuste conforme seu módulo
+from src.load_data import load_data 
 
 def test_load_data_sample():
 
