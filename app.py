@@ -1,5 +1,5 @@
 from app.main import FraudDetectionApp
-import app as st
+import streamlit as st
 
 app_instance = FraudDetectionApp()
 
