@@ -37,4 +37,4 @@ class ModelPredictor:
         print(f"{file.replace('.pkl', '')} Recall: {recall:.4f}, f1: {f1}")
         print(conf_matrix)
         print(report)
-        return results
+        return self.results
