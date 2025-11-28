@@ -26,10 +26,16 @@ def set_custom_css():
             background-color: var(--primary-color) !important;
             color: white !important;
         }
+        /* Sidebar styles */
+        .stSidebar {
+            background-color: var(--secondary-bg) !important;
+            color: var(--text-color) !important;
+        }
         </style>
         """,
         unsafe_allow_html=True,
     )
+
 
 set_custom_css()
 
