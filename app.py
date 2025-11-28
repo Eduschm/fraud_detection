@@ -31,10 +31,6 @@ def set_custom_css():
     )
 
 
-# Streamlit interface
-
-
-st.title("Fraud Detection API Status")
 st.write("API is running and ready to accept requests.")
 
 # run app_instance.app.run()
