@@ -3,7 +3,7 @@ from src.predict import ModelPredictor
 from src.load_data import load_data
 
 def test_evaluate_models():
-    X_test, y_test = load_data()
+    X_test, y_test = load_data(data_path="data/sample_data.csv")
 
     model_predictor = ModelPredictor()
     results = model_predictor.evaluate_models(X_test, y_test)
