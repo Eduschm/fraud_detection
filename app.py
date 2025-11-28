@@ -1,4 +1,4 @@
-from main import FraudDetectionApp
+from app.main import FraudDetectionApp
 import app as st
 
 app_instance = FraudDetectionApp()
