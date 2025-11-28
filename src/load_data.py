@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Load fraud data from CSV and drop isFraud,isFlaggedFraud
-def load_data(file_path, predict=False):
+def load_data(X, predict=False):
     if predict:
         X = X.drop(['nameDest', 'nameOrig', 'step'], axis=1)
         X = pd.get_dummies(X)
