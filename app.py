@@ -1,5 +1,5 @@
 from main import FraudDetectionApp
-import app.app as st
+import app as st
 
 app_instance = FraudDetectionApp()
 
