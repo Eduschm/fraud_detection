@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fraud_detection"
+version = "0.0.1"
+description = "Banking Fraud Detection System"
+readme = "README.md"
+authors = [{name="Eduardo"}]
+
+
+
+[tool.setuptools.packages.find]
+where = ["src"]
