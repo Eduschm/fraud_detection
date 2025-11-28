@@ -3,8 +3,6 @@ import app as st
 
 app_instance = FraudDetectionApp()
 
-# Streamlit config
-st.set_page_config(page_title="Fraud Detection API", layout="centered")
 # Theme
 def set_custom_css():
     st.markdown(
