@@ -33,6 +33,10 @@ def main():
             log.info("Evaluating models...")
             model_predictor = ModelPredictor()
             model_predictor.evaluate_models(X_test, y_test)
+        elif args.mode == 'quick_train':
+            log.info("Quick training models...")
+            models, cv_results = train(X_train, y_train, quick=True, all_models=False)
+            
     except Exception as e:
         log.error(f"An error occurred: {str(e)}")
 

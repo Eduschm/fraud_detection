@@ -16,7 +16,7 @@ def train(X_train, y_train, quick=False, all_models=True):
     # Get pipelines from config
     log = Logger("ModelTraining", level="INFO").get()
     log.info("Retrieving model pipelines...")
-    pipelines = get_pipeline(quick=quick, all_models=all_models)
+    pipelines = get_pipeline(all_models=all_models)
 
     # Create empty dic to store params and results
     best_models = {}
