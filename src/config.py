@@ -6,9 +6,12 @@ from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
+from utils.logger import setup_logger  
 
 def random_search_cv(X_train, y_train, model, model_name):
     #Define Hyperparameters for each model
+    log = setup_logger("RandomSearchCV", level="INFO")
+    log.info(f"Setting up RandomizedSearchCV for {model_name}...")
     param_grids = {
         'LogisticRegression': {
             'classifier__C': [100, 1000, 10000],
@@ -32,11 +35,14 @@ def random_search_cv(X_train, y_train, model, model_name):
 }
     }
     # Create KFold object
-    kf = KFold(n_splits=5, shuffle=True, random_state=42)
-    #Randomized search with specified parameters
-    model = RandomizedSearchCV(model, cv=kf, param_distributions=param_grids[model_name], verbose=3, n_jobs=-1, scoring='recall', n_iter=5)
-    # Model fit
-    model.fit(X_train, y_train)
+    try:
+        kf = KFold(n_splits=5, shuffle=True, random_state=42)
+        #Randomized search with specified parameters
+        model = RandomizedSearchCV(model, cv=kf, param_distributions=param_grids[model_name], verbose=3, n_jobs=-1, scoring='recall', n_iter=5)
+        # Model fit
+        model.fit(X_train, y_train)
+    except Exception as e:
+        log.error(f"An error occurred during RandomizedSearchCV for {model_name}: {str(e)}")
 
     return model
 
