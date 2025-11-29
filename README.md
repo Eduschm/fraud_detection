@@ -1,120 +1,252 @@
-# Banking Fraud Detection System Documentation
+# Banking Fraud Detection System
 
-## Project Overview
+A production-ready machine learning system for detecting fraudulent banking transactions. Built with FastAPI, XGBoost, and modern MLOps tools.
 
-This fraud detection system employs machine learning techniques to identify fraudulent banking transactions. The project uses a structured pipeline for data preprocessing, model training, and evaluation with a focus on optimizing recall scores to effectively identify fraudulent activities.
+![Python](https://img.shields.io/badge/python-3.11-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.122.0-green)
+![License](https://img.shields.io/badge/license-MIT-blue)
 
-## System Architecture
+## Why This Project?
 
-The project is organized into several modules:
+Fraud detection is one of those problems where getting it wrong has real consequences. Miss a fraudulent transaction and the bank loses money. Flag too many legitimate transactions and customers get frustrated. This project tackles that balance by prioritizing recall (catching fraud) while keeping false positives manageable.
 
-1. **Data Loading and Preparation** (`load_data.py`)
-2. **Model Configuration** (`config.py`)
-3. **Model Training** (`train.py`)
-4. **Model Evaluation** (`predict.py`)
-5. **Main Application** (`main.py`)
+The dataset is highly imbalanced (typical for fraud), which made it a good learning ground for handling class imbalance, hyperparameter tuning, and thinking through real-world tradeoffs.
 
-## Data
+## Quick Start
 
-The system processes banking transaction data from `fraud_data.csv`, which contains information about bank transactions. During preprocessing:
-To download the data, access https://www.kaggle.com/datasets/amanalisiddiqui/fraud-detection-dataset/data
+```bash
+# Clone the repo
+git clone https://github.com/yourusername/fraud-detection.git
+cd fraud-detection
 
-- Identifiers (`nameOrig`, `nameDest`) and temporal data (`step`) are removed
-- Categorical variables are encoded using one-hot encoding
-- Data is split into features (X) and target variable (y), where `isFraud` is the target variable
+# Install dependencies
+pip install -r requirements.txt
+
+# Download the dataset
+# Get it from: https://www.kaggle.com/datasets/amanalisiddiqui/fraud-detection-dataset
+# Place fraud_data.csv in the data/ directory
+
+# Train models (this takes a while)
+python main.py --mode train --rows 10000  # Start with subset
+
+# Evaluate
+python main.py --mode predict
+
+# Run API
+uvicorn app.main:app --reload
+
+# Run Streamlit app
+streamlit run app.py
+```
+
+## Project Structure
+
+```
+fraud-detection/
+├── app/
+│   ├── main.py           # FastAPI application
+│   └── __init__.py
+├── config/
+│   └── config.py         # Model configs and hyperparameters
+├── data/
+│   ├── fraud_data.csv    # Main dataset (not in repo)
+│   └── sample_data.csv   # Sample for testing
+├── models/               # Saved models (gitignored)
+├── src/
+│   ├── train.py          # Training pipeline
+│   ├── predict.py        # Inference and evaluation
+│   └── __init__.py
+├── tests/
+│   ├── test_pipeline.py
+│   └── test_predict.py
+├── utils/
+│   ├── load_data.py      # Data loading and preprocessing
+│   ├── logger.py         # Logging utility
+│   └── __init__.py
+├── app.py                # Streamlit interface
+├── main.py               # CLI entry point
+├── Dockerfile
+├── requirements.txt
+└── README.md
+```
+
+## The Data
+
+The dataset contains ~6.3M banking transactions with these features:
+
+- **step**: Time unit (1 step = 1 hour)
+- **type**: Transaction type (CASH_IN, CASH_OUT, DEBIT, PAYMENT, TRANSFER)
+- **amount**: Transaction amount
+- **nameOrig**: Customer ID (removed during preprocessing)
+- **oldbalanceOrg**: Initial balance before transaction
+- **newbalanceOrig**: Balance after transaction
+- **nameDest**: Recipient ID (removed during preprocessing)
+- **oldbalanceDest**: Initial recipient balance
+- **newbalanceDest**: New recipient balance
+- **isFraud**: Target variable (1 = fraud, 0 = legitimate)
+
+### Preprocessing Steps
+
+1. Drop identifier columns (nameOrig, nameDest, step)
+2. One-hot encode transaction types
+3. Standardize numerical features
+4. Split 80/20 train/test with stratification
+
+The class imbalance is significant (frauds are rare), which is why I focused on recall as the primary metric.
 
 ## Models
 
-Three different machine learning models are implemented and compared:
+I tested three algorithms to see what works best:
 
-1. **Logistic Regression**
-   - Uses feature selection with SelectKBest
-   - Hyperparameters tuned: regularization strength (C), solver algorithm, number of features
+### 1. Logistic Regression
+Fast baseline with feature selection (SelectKBest). Good for interpretability but limited by linear decision boundaries.
 
-2. **Random Forest**
-   - Hyperparameters tuned: number of estimators, maximum depth, minimum samples split
+### 2. Random Forest
+Handles non-linear patterns and provides feature importance. Better than logistic regression but slower to train.
 
-3. **XGBoost**
-   - Hyperparameters tuned: number of estimators, max depth, learning rate, subsample ratio, column subsample ratio, minimum child weight, gamma, class weight
+### 3. XGBoost (Final Choice)
+Best performance overall. Handles class imbalance well with `scale_pos_weight` parameter and gives good feature importance for investigation teams.
 
-## Pipeline Architecture
+### Hyperparameter Tuning
 
-Each model follows a consistent ML pipeline:
-- Data standardization using StandardScaler
-- Optional feature selection (for Logistic Regression)
-- Model training with hyperparameter optimization
+Used RandomizedSearchCV with 5-fold cross-validation, optimizing for recall. The search space was extensive:
 
-## Hyperparameter Optimization
+- XGBoost: learning rate, max depth, subsample ratios, min_child_weight
+- Random Forest: n_estimators, max_depth, min_samples_split
+- Logistic Regression: regularization (C), solver, feature count
 
-The system uses `RandomizedSearchCV` with 5-fold cross-validation to find optimal hyperparameters for each model. Optimization is specifically targeted to maximize recall, prioritizing the detection of fraudulent transactions (reducing false negatives).
+## Why Recall Over Precision?
 
-## Evaluation Metrics
+In fraud detection, the cost of missing fraud (false negative) is typically higher than investigating a legitimate transaction (false positive). A false negative means actual money lost. A false positive just means a transaction gets flagged for review.
 
-Models are evaluated using several metrics with emphasis on:
-- **Recall**: The ability to detect all fraudulent transactions
-- **Precision**: The accuracy of fraud predictions
-- **F1 Score**: Harmonic mean of precision and recall
-- **Confusion Matrix**: Detailed breakdown of true/false positives and negatives
-- **Classification Report**: Comprehensive performance metrics
+That said, precision still matters - too many false alarms and the review team gets overwhelmed. The goal is high recall while keeping precision reasonable.
 
-## Usage Instructions
+## API Reference
 
-### Requirements
+### Endpoints
 
-The project requires Python with the following packages:
-```
-scikit-learn==1.6.1
-pandas==2.2.3
-xgboost==3.0.0
-joblib==1.4.2
-```
-(See requirements.txt for complete list)
-
-### Training Models
-
-To train the models:
+**GET /** - Health check
 ```bash
-python main.py --mode train
+curl http://localhost:8000/
+# Returns: {"status": "ok"}
 ```
 
-This will:
-1. Load and preprocess the transaction data
-2. Train all three models with hyperparameter optimization
-3. Save the best models in the `models` directory
-
-### Making Predictions
-
-To evaluate models on the test set:
+**GET /predict** - Make prediction
 ```bash
-python main.py --mode predict
+curl -X GET "http://localhost:8000/predict" \
+  -H "Content-Type: application/json" \
+  -d '{"amount": 1000, "type": "TRANSFER", ...}'
 ```
 
-This will:
-1. Load the trained models from the `models` directory
-2. Generate predictions on the test data
-3. Calculate and display performance metrics
+**GET /get_samples** - Get sample transactions
+```bash
+curl http://localhost:8000/get_samples
+```
 
-## Implementation Details
+## Results
 
-### Data Split Strategy
+Results from the test set (will vary based on data split):
 
-The dataset is split with 70% for training and 30% for testing with stratified sampling to maintain class distribution. This strategy ensures:
-- Sufficient data for testing model performance in a production-like environment
-- Preservation of the fraud/non-fraud ratio across splits
+Coming soon!
 
-### Performance Optimization
+(Run `python main.py --mode predict` to see actual numbers)
 
-- All available CPU cores are utilized during training (`n_jobs=-1`)
-- Models are serialized using `joblib` for persistence
+## Deployment Roadmap
 
-## Extending the System
+Planning to deploy this with AWS:
 
-To add new models to the pipeline:
-1. Add the model configuration to the `get_pipeline()` function in `config.py`
-2. Define hyperparameter grid in the `param_grids` dictionary in `random_search_cv()`
+1. **Model Storage**: S3 bucket for versioned models
+2. **API**: Lambda for serverless inference (or EC2 if Lambda times out)
+3. **Frontend**: Streamlit on App Runner
+4. **Database**: RDS for logging predictions and feedback
+5. **Orchestration**: Airflow for retraining pipeline
+6. **Monitoring**: MLflow for experiment tracking and model registry
 
-## Notes on Banking Fraud Detection
+## MLOps Stack
 
-- The system prioritizes recall to minimize missed fraud cases
-- XGBoost includes `scale_pos_weight` to address class imbalance, which is common in fraud detection
-- Standardization is applied to all features to ensure optimal model performance
+- **MLflow**: Experiment tracking and model versioning
+- **Airflow**: Scheduled retraining and data pipeline
+- **Docker**: Containerization for consistent environments
+- **Joblib**: Model serialization
+
+## Running Tests
+
+```bash
+# Run all tests
+pytest tests/ -v
+
+# Run specific test file
+pytest tests/test_pipeline.py -v
+
+# With coverage
+pytest --cov=src tests/
+```
+
+## Docker
+
+```bash
+# Build image
+docker build -t fraud-detection .
+
+# Run container
+docker run -p 8080:8080 fraud-detection
+
+# Access API at http://localhost:8080
+```
+
+## Known Issues & TODO
+
+### Critical (Fix Before Production)
+- [ ] Fix broken test functions in `test_pipeline.py` (nested function definitions)
+- [ ] Fix `/predict` endpoint - currently doesn't parse query_params correctly
+- [ ] Add input validation with Pydantic models
+- [ ] Add proper error handling in API endpoints
+- [ ] Model files aren't included in Docker image (need to download or mount)
+
+### High Priority
+- [ ] Add data validation (check for nulls, outliers, schema changes)
+- [ ] Implement threshold tuning (0.5 might not be optimal)
+- [ ] Add CORS configuration for web clients
+- [ ] Create proper train/val/test split (currently just train/test)
+- [ ] Add model explainability (SHAP values for investigations)
+- [ ] Set up CI/CD pipeline (GitHub Actions)
+
+### Nice to Have
+- [ ] Add model monitoring and drift detection
+- [ ] Implement A/B testing framework
+- [ ] Add authentication/rate limiting to API
+- [ ] Create interactive dashboard for model metrics
+- [ ] Add feature engineering (transaction velocity, account age, etc.)
+- [ ] Implement ensemble methods or model stacking
+- [ ] Add automated retraining based on performance degradation
+- [ ] Create comprehensive API documentation with examples
+
+### Documentation
+- [ ] Add architecture diagram
+- [ ] Write blog post about interesting challenges
+- [ ] Add troubleshooting section
+- [ ] Document MLflow setup and usage
+- [ ] Add contribution guidelines
+
+## What I Learned
+
+1. **Class imbalance is hard**: Simple accuracy is useless when 99.5% of transactions are legitimate. Had to dig into precision-recall tradeoffs.
+
+2. **Hyperparameter tuning takes forever**: RandomizedSearchCV on the full dataset took hours. Learned to prototype on subsets first.
+
+3. **Production is different from notebooks**: Making something that actually works as an API requires way more error handling and validation than I expected.
+
+4. **MLOps matters**: Without MLflow, I was losing track of which hyperparameters produced which results. Experiment tracking is essential.
+
+## Contributing
+
+Found a bug? Have a suggestion? Open an issue or submit a PR. This is a learning project so feedback is welcome.
+
+## License
+
+MIT License - feel free to use this for learning or as a starting point for your own projects.
+
+
+---
+
+*
