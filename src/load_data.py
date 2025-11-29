@@ -8,31 +8,21 @@ def load_data(X=None, predict=False, data_path='data/fraud_data.csv'):
     args:
         X: DataFrame, optional, default=None
             If provided and predict=True, will be used as input features.
-        predict: bool, optional, default=False
-            If True, function returns only features for prediction.
         data_path: str, optional, default='data/fraud_data.csv'
             Path to the CSV data file.
     returns:
-        If predict is False:
-            X: DataFrame
-                Features for model training.
-            y: Series
-                Target variable indicating fraud.
-        If predict is True:
-            X: DataFrame
-                Features for prediction.
+        X: DataFrame
+            Features for model training.
+        y: Series
+            Target variable indicating fraud.
     raises: Exception
         If there is an error loading the data.
     '''
-    
+
     log = setup_logger("DataLoader", level="INFO")
 
     log.info("Loading data from CSV...")
-    if predict:
-        X = X.drop(['nameDest', 'nameOrig', 'step'], axis=1)
-        X = pd.get_dummies(X)
-        return X
-    
+
     log.info("Preparing features and target variable...")
     try:
         df = pd.read_csv(data_path)
@@ -44,3 +34,5 @@ def load_data(X=None, predict=False, data_path='data/fraud_data.csv'):
         log.error(f"An error occurred while loading data: {str(e)}")
         raise e
     return X, y
+
+
