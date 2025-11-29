@@ -22,8 +22,8 @@ def status():
     return {"status": "ok"}
 
 @app.get("/predict")
-def predict():
-    return ModelPredictor().evaluate(query_params['X'])
+def predict(query_params):
+    return ModelPredictor().evaluate(query_params)
 
 @app.get("/get_samples")
 def get_samples():
