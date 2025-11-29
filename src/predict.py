@@ -35,7 +35,7 @@ class ModelPredictor():
         Returns:
             dict: A dictionary containing evaluation metrics for each model.
         """
-        log = Logger("ModelEvaluation", level="INFO")
+        log = Logger("ModelEvaluation", level="INFO").get()
         log.info("Evaluating models...")
         for file in os.listdir('models'):
             # Load model

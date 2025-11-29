@@ -19,7 +19,7 @@ def load_data(X=None, predict=False, data_path='data/fraud_data.csv'):
         If there is an error loading the data.
     '''
 
-    log = Logger(name="DataLoader", level="INFO")
+    log = Logger(name="DataLoader", level="INFO").get()
 
     log.info("Loading data from CSV...")
 

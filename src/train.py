@@ -14,7 +14,7 @@ def train(X_train, y_train, quick=False, all_models=True):
         dict: A dictionary containing the best models and their cross-validation results.
     """
     # Get pipelines from config
-    log = Logger("ModelTraining", level="INFO")
+    log = Logger("ModelTraining", level="INFO").get()
     log.info("Retrieving model pipelines...")
     pipelines = get_pipeline(quick=quick, all_models=all_models)
 

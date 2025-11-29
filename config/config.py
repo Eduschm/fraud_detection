@@ -11,7 +11,7 @@ import yaml
 
 def random_search_cv(X_train, y_train, model, model_name, quick=False):
     #Define Hyperparameters for each model
-    log = Logger("RandomSearchCV", level="INFO")
+    log = Logger("RandomSearchCV", level="INFO").get()
     log.info(f"Setting up RandomizedSearchCV for {model_name}...")
     param_grids = yaml.safe_load(open('param_grids.yaml'))
 

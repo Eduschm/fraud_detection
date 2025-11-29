@@ -8,7 +8,7 @@ from utils.logger import Logger
 
 def main():
 
-    log = Logger("FraudDetectionApp", level="INFO")
+    log = Logger("FraudDetectionApp", level="INFO").get()
     log.info("Starting Fraud Detection Application")
     # Create parser to choose between train or test model
     parser = argparse.ArgumentParser(description="Train or predict using ML model")
