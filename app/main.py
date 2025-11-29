@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from src.predict import ModelPredictor
 import pandas as pd
-from src.load_data import load_data
+from utils.load_data import load_data
 class FraudDetectionApp:
     def __init__(self, query_params: dict = None):
         a = 1 # Placeholder to avoid empty constructor

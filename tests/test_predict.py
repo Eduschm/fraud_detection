@@ -1,6 +1,6 @@
 import pytest
 from src.predict import ModelPredictor
-from src.load_data import load_data
+from utils.load_data import load_data
 
 
 # TO DO -- test the evaluate_models method using original data

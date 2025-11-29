@@ -2,7 +2,7 @@ import pandas as pd
 from utils.logger import Logger
 
 # Load fraud data from CSV and drop isFraud,isFlaggedFraud
-def load_data(X=None, predict=False, data_path='data/fraud_data.csv'):
+def load_data(X=None, data_path='data/fraud_data.csv', n_rows=None):
     '''
     Load data from CSV file and prepare features and target variable.
     args:
@@ -25,7 +25,7 @@ def load_data(X=None, predict=False, data_path='data/fraud_data.csv'):
 
     log.info("Preparing features and target variable...")
     try:
-        df = pd.read_csv(data_path)
+        df = pd.read_csv(data_path) if not n_rows else pd.read_csv(data_path, nrows=n_rows)
         X = df.drop(['isFraud', 'isFlaggedFraud'], axis=1)
         X = X.drop(['nameDest', 'nameOrig', 'step'], axis=1)
         X = pd.get_dummies(X)
