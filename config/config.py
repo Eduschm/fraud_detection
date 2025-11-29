@@ -8,6 +8,10 @@ from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
 from utils.logger import Logger  
 import yaml
+# import column transformer
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
+
 
 def random_search_cv(X_train, y_train, model, model_name, quick=False):
     #Define Hyperparameters for each model
@@ -46,24 +50,35 @@ def get_pipeline(all_models=True):
         dict: A dictionary containing machine learning pipelines.
     """
     # Creates a pipeline for each model, Scaler, feature selection and classification)
-    pipelines = {
-        'LogisticRegression': Pipeline([
-            ('scaler', StandardScaler()),
-            ('feature_selection', SelectKBest(f_classif)),
-            ('classifier', LogisticRegression(random_state=42, max_iter=1000))
-        ]),
-        'RandomForest': Pipeline([
-            ('scaler', StandardScaler()),
-            ('classifier', RandomForestClassifier(random_state=42))
-        ]),
-        'XGBClassifier': Pipeline([
-            ('scaler', StandardScaler()),
-            ('classifier', XGBClassifier(use_label_encoder=False, eval_metric='logloss'))
-        ]) if all_models else 
-        {'XGBClassifier': Pipeline([
-            ('scaler', StandardScaler()),
-            ('classifier', XGBClassifier(use_label_encoder=False, eval_metric='logloss'))
-        ]) }
+    preprocessor = ColumnTransformer(
+    transformers=[
+        ('cat', OneHotEncoder(handle_unknown='ignore'), cat_features),
+        ('num', StandardScaler(), num_features)
+    ],
+    remainder='passthrough'
+)
 
-    }
+    pipelines =  {
+    'LogisticRegression': Pipeline([
+        ('preprocessor', preprocessor),
+        ('feature_selection', SelectKBest(f_classif)),
+        ('classifier', LogisticRegression(random_state=42, max_iter=1000))
+    ]),
+
+    'RandomForest': Pipeline([
+        ('preprocessor', preprocessor),
+        ('scaler', StandardScaler()),
+        ('classifier', RandomForestClassifier(random_state=42))
+    ]),
+
+    'XGBClassifier': Pipeline([
+        ('preprocessor', preprocessor),
+        ('scaler', StandardScaler()),
+        ('classifier', XGBClassifier(use_label_encoder=False, eval_metric='logloss'))
+    ])
+}
+    if not all_models:
+        pipelines = {
+            'XGBClassifier': pipelines['XGBClassifier']
+        }
     return pipelines
