@@ -1,5 +1,5 @@
 import pandas as pd
-from utils.logger import setup_logger
+from utils.logger import Logger
 
 # Load fraud data from CSV and drop isFraud,isFlaggedFraud
 def load_data(X=None, predict=False, data_path='data/fraud_data.csv'):
@@ -19,7 +19,7 @@ def load_data(X=None, predict=False, data_path='data/fraud_data.csv'):
         If there is an error loading the data.
     '''
 
-    log = setup_logger("DataLoader", level="INFO")
+    log = Logger(name="DataLoader", level="INFO")
 
     log.info("Loading data from CSV...")
 

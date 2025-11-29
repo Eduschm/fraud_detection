@@ -1,7 +1,7 @@
-from src.config import get_pipeline
-from src.config import random_search_cv
+from config.config import get_pipeline
+from config.config import random_search_cv
 import joblib
-from utils.logger import setup_logger
+from utils.logger import Logger
 
 def train(X_train, y_train, quick=False, all_models=True):
     """Train machine learning models using RandomizedSearchCV and save the best models.
@@ -14,7 +14,7 @@ def train(X_train, y_train, quick=False, all_models=True):
         dict: A dictionary containing the best models and their cross-validation results.
     """
     # Get pipelines from config
-    log = setup_logger("ModelTraining", level="INFO")
+    log = Logger("ModelTraining", level="INFO")
     log.info("Retrieving model pipelines...")
     pipelines = get_pipeline(quick=quick, all_models=all_models)
 
@@ -23,12 +23,14 @@ def train(X_train, y_train, quick=False, all_models=True):
     cv_results = {}
 
     log.info("Starting model training with RandomizedSearchCV...")
+
     try:
         for name in pipelines:
             log.info(f"Training model: {name}")
             grid_search = random_search_cv(X_train, y_train, pipelines[name], name)
             log.info(f"Best parameters for {name}: {grid_search.best_params_}")
             log.info(f"Best cross-validation recall: {grid_search.best_score_:.4f}")
+
             # Save the best model
             log.info(f"Saving the best model for {name}...")
             joblib.dump(grid_search, f"models/{name}.pkl")

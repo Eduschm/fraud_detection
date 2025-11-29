@@ -1,7 +1,7 @@
 import os
 import joblib
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, precision_score, f1_score, recall_score
-from utils.logger import setup_logger
+from utils.logger import Logger
 class ModelPredictor():
     """
     ModelPredictor is a utility class for loading trained machine learning models and making predictions or evaluating their performance.
@@ -35,7 +35,7 @@ class ModelPredictor():
         Returns:
             dict: A dictionary containing evaluation metrics for each model.
         """
-        log = setup_logger("ModelPredictor", level="INFO")
+        log = Logger("ModelEvaluation", level="INFO")
         log.info("Evaluating models...")
         for file in os.listdir('models'):
             # Load model

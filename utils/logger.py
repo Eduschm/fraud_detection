@@ -3,7 +3,7 @@ import logging
 
 # create logger class
 
-class Logger:
+class Logger(name="", level=logging.INFO):
     ''' 
     A simple logger class to encapsulate logging functionality.
     args: 

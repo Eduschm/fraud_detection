@@ -4,11 +4,11 @@ from src.train import train
 from src.predict import ModelPredictor
 import argparse
 import uvicorn
-from utils.logger import setup_logger
+from utils.logger import Logger
 
 def main():
 
-    log = setup_logger("FraudDetectionApp", level="INFO")
+    log = Logger("FraudDetectionApp", level="INFO")
     log.info("Starting Fraud Detection Application")
     # Create parser to choose between train or test model
     parser = argparse.ArgumentParser(description="Train or predict using ML model")
