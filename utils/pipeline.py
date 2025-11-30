@@ -11,14 +11,13 @@ import yaml
 # import column transformer
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
-from load_data import get_feature_type
 
 
 def random_search_cv(X_train, y_train, model, model_name, quick=False):
     #Define Hyperparameters for each model
     log = Logger("RandomSearchCV", level="INFO").get()
     log.info(f"Setting up RandomizedSearchCV for {model_name}...")
-    param_grids = yaml.safe_load(open('param_grids.yaml'))
+    param_grids = yaml.safe_load(open('config/param_grids.yaml'))
 
 
     # Create KFold object
@@ -58,7 +57,7 @@ def get_pipeline(cat_features, num_features, all_models=True,):
     preprocessor = ColumnTransformer(
     transformers=[
         ('cat', OneHotEncoder(handle_unknown='ignore'), cat_features),
-        ('num', StandardScaler(), num_features)
+        ('num', StandardScaler(with_mean=False), num_features)
     ],
     remainder='passthrough'
 )

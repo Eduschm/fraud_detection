@@ -26,6 +26,7 @@ def main():
     # Train_test_split
     log.info("Splitting data into train and test sets...")
     df, val_df = test_validation_split(df, validation_size=0.1)
+    X, y = df.drop('isFraud', axis=1), df['isFraud']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42, stratify=y, shuffle=True)
 
     try:

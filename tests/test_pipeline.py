@@ -1,11 +1,11 @@
 import pytest
 from utils.load_data import load_data
-
+from sklearn.model_selection import train_test_split
 
 
 @pytest.fixture
 def df():
-    return load_data("data/sample_data.csv", n_rows=1000)
+    return load_data("data/fraud_data.csv", n_rows=1000)
 
 def test_load_data_returns_dataframe(df):
     assert df is not None
@@ -64,7 +64,9 @@ def test_train_test_validation_split(df):
 
 def test_evaluate_models():
     from src.predict import ModelPredictor
-
+    df = load_data("data/fraud_data.csv", n_rows=1000)
+    X, y = df.drop('isFraud', axis=1), df['isFraud']
+    _, X_test, _, y_test = train_test_split(X, y, test_size=0.3, random_state=42, stratify=y, shuffle=True)
     model_predictor = ModelPredictor()
     results = model_predictor.evaluate_models(X_test, y_test)
 
