@@ -1,6 +1,12 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   test:
@@ -21,35 +27,15 @@ jobs:
       - name: Upgrade pip
         run: python -m pip install --upgrade pip
 
-      - name: Install package (editable) if possible
-        run: |
-          # tenta instalar o package (se pyproject.toml / setup.py existir)
-          python -m pip install -e . || echo "editable install failed (ok to continue)"
-
-      - name: Install runtime deps (requirements.txt fallback)
+      - name: Install runtime deps 
         run: |
           if [ -f requirements.txt ]; then
             python -m pip install -r requirements.txt
-          else
-            # fallback básico
-            python -m pip install pandas scikit-learn xgboost mlflow
-          fi
+         
 
       - name: Ensure pytest is installed
         run: python -m pip install pytest
 
-      - name: Debug environment (prints useful info)
-        run: |
-          echo "Python executable:"
-          which python || python -V
-          echo "Python version:"
-          python -V
-          echo "Pip list (top 50):"
-          python -m pip list --format=columns | sed -n '1,50p'
-          echo "Workspace listing:"
-          ls -la
-          echo "src listing:"
-          ls -la src || true
 
       - name: Run tests
         env:
