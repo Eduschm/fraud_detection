@@ -1,9 +1,11 @@
 import pytest
-from src.data import load_data
+from utils.load_data import load_data
+
+
 
 @pytest.fixture
 def df():
-    return load_data("data/sample_data.csv", predict=True)
+    return load_data("data/sample_data.csv", n_rows=1000)
 
 def test_load_data_returns_dataframe(df):
     assert df is not None
@@ -46,3 +48,30 @@ def test_numeric_non_negative(df):
     for col in numeric_cols:
         if col in df.columns:
             assert (df[col] >= 0).all(), f"Negative values in {col}"
+@pytest.fixture
+def test_train_test_validation_split(df):
+    from utils.load_data import train_test_validation_split
+    train_df, val_df = train_test_validation_split(df, test_size=0.2, validation_size=0.1)
+    
+    total_len = len(df)
+    assert len(train_df) + len(val_df) == total_len
+    
+    # Check approximate sizes
+    assert abs(len(val_df) - 0.1 * total_len) < 0.05 * total_len
+
+
+
+
+def test_evaluate_models():
+    from src.predict import ModelPredictor
+
+    model_predictor = ModelPredictor()
+    results = model_predictor.evaluate_models(X_test, y_test)
+
+    assert isinstance(results, dict)
+    for model_name, metrics in results.items():
+        assert 'Recall' in metrics
+        assert 'f1' in metrics
+        assert 'Precision' in metrics
+        assert 'classification_report' in metrics
+        assert 'confusion_matrix' in metrics

@@ -5,6 +5,7 @@ from src.predict import ModelPredictor
 import argparse
 import uvicorn
 from utils.logger import Logger
+from utils.load_data import test_validation_split
 
 def main():
 
@@ -20,9 +21,11 @@ def main():
 
     # Create X and y from the dataset
     log.info("Loading data...")
-    X, y = load_data(args.data_path) if args.rows is None else load_data(args.data_path, n_rows=args.rows)
+    df = load_data(args.data_path) if args.rows is None else load_data(args.data_path, n_rows=args.rows)
+
     # Train_test_split
     log.info("Splitting data into train and test sets...")
+    df, val_df = test_validation_split(df, validation_size=0.1)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42, stratify=y, shuffle=True)
 
     try:

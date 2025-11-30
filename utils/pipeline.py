@@ -11,6 +11,7 @@ import yaml
 # import column transformer
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
+from load_data import get_feature_type
 
 
 def random_search_cv(X_train, y_train, model, model_name, quick=False):
@@ -18,7 +19,7 @@ def random_search_cv(X_train, y_train, model, model_name, quick=False):
     log = Logger("RandomSearchCV", level="INFO").get()
     log.info(f"Setting up RandomizedSearchCV for {model_name}...")
     param_grids = yaml.safe_load(open('param_grids.yaml'))
-    
+
 
     # Create KFold object
     try:
@@ -42,14 +43,18 @@ def random_search_cv(X_train, y_train, model, model_name, quick=False):
     
     return model
 
-def get_pipeline(all_models=True):
+def get_pipeline(cat_features, num_features, all_models=True,):
+
     """ Get machine learning pipelines for different models.
     Args:
         all_models (bool, optional): If True, includes all models. If False, includes only XGBClassifier. Defaults to True.
+        cat_features (list): List of categorical feature names.
+        num_features (list): List of numerical feature names.
     Returns:
         dict: A dictionary containing machine learning pipelines.
     """
     # Creates a pipeline for each model, Scaler, feature selection and classification)
+
     preprocessor = ColumnTransformer(
     transformers=[
         ('cat', OneHotEncoder(handle_unknown='ignore'), cat_features),

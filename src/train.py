@@ -1,7 +1,8 @@
-from config.config import get_pipeline
-from config.config import random_search_cv
+from utils.pipeline import get_pipeline
+from utils.pipeline import random_search_cv
 import joblib
 from utils.logger import Logger
+from utils.load_data import get_feature_type
 
 def train(X_train, y_train, quick=False, all_models=True):
     """Train machine learning models using RandomizedSearchCV and save the best models.
@@ -16,7 +17,8 @@ def train(X_train, y_train, quick=False, all_models=True):
     # Get pipelines from config
     log = Logger("ModelTraining", level="INFO").get()
     log.info("Retrieving model pipelines...")
-    pipelines = get_pipeline(all_models=all_models)
+    cat_features, num_features = get_feature_type(X_train)
+    pipelines = get_pipeline(cat_features, num_features, all_models=all_models)
 
     # Create empty dic to store params and results
     best_models = {}

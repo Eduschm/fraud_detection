@@ -32,25 +32,21 @@ def load_data(X=None, data_path='data/fraud_data.csv', n_rows=None):
         raise e
 
 
-def train_test_validation_split(df, test_size=0.2, validation_size=0.1, random_state=42):
+def test_validation_split(df, validation_size=0.1, random_state=42):
     '''
     Split the DataFrame into training, validation, and test sets.
     args:
         df: DataFrame
             The complete dataset to be split.
-        test_size: float, optional, default=0.2
-            Proportion of the dataset to include in the test split.
         validation_size: float, optional, default=0.1
             Proportion of the dataset to include in the validation split.
         random_state: int, optional, default=42
             Random seed for reproducibility.    
     returns:
-        train_df: DataFrame
+        train_val_df: DataFrame
             Training set.
         val_df: DataFrame
             Validation set.
-        test_df: DataFrame
-            Test set.
     raises: Exception
         If there is an error during the splitting process.
     '''
@@ -59,11 +55,9 @@ def train_test_validation_split(df, test_size=0.2, validation_size=0.1, random_s
     log = Logger(name="DataSplitter", level="INFO").get()
     log.info("Splitting data into train, validation, and test sets...")
     try:
-        train_val_df, test_df = train_test_split(df, test_size=test_size, random_state=random_state)
-        relative_val_size = validation_size / (1 - test_size)
-        train_df, val_df = train_test_split(train_val_df, test_size=relative_val_size, random_state=random_state)
-        log.info(f"Data split completed: {len(train_df)} training samples, {len(val_df)} validation samples, {len(test_df)} test samples.")
-        return train_df, val_df, test_df
+        train_val_df, test_df = train_test_split(df, random_state=random_state)
+        log.info(f"Data split completed: {len(train_val_df)} training samples, {len(test_df)} validation samples.")
+        return  train_val_df, test_df
     except Exception as e:
         log.error(f"An error occurred during data splitting: {str(e)}")
         raise e
