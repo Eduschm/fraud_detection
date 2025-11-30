@@ -23,6 +23,7 @@ def train(X_train, y_train, quick=False, all_models=True):
     # Create empty dic to store params and results
     best_models = {}
     cv_results = {}
+    best_params = {}
 
     log.info("Starting model training with RandomizedSearchCV...")
 
@@ -35,7 +36,11 @@ def train(X_train, y_train, quick=False, all_models=True):
 
             # Save the best model
             log.info(f"Saving the best model for {name}...")
-            joblib.dump(grid_search, f"models/{name}.pkl")
+            joblib.dump(grid_search.best_estimator_, f"models/{name}.pkl")
+
+            # Save best params for model 
+            log.info(f"Storing best model and CV results for {name}...")
+            joblib.dump(grid_search.best_params_ f"models/{name}_params.pkl")
 
             best_models[name] = grid_search.best_estimator_
             cv_results[name] = {
@@ -46,6 +51,7 @@ def train(X_train, y_train, quick=False, all_models=True):
 
     except Exception as e:
         log.error(f"An error occurred during model training: {str(e)}")
+        raise e
 
     log.info("Model training completed.")
 
