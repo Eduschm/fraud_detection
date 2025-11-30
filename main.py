@@ -13,7 +13,7 @@ def main():
     log.info("Starting Fraud Detection Application")
     # Create parser to choose between train or test model
     parser = argparse.ArgumentParser(description="Train or predict using ML model")
-    parser.add_argument('--mode', choices=['train', 'predict', 'quick_train'], required=True, help='Select operation mode')
+    parser.add_argument('--mode', choices=['train', 'predict', 'quick_train', 'validate'], required=True, help='Select operation mode')
     parser.add_argument('--data-path', type=str, default='data/fraud_data.csv', help='Path to the dataset CSV file')
     parser.add_argument('--rows', type=int, default=None, help='Number of rows to read from the dataset')
 
@@ -41,6 +41,10 @@ def main():
         elif args.mode == 'quick_train':
             log.info("Quick training models...")
             models, cv_results = train(X_train, y_train, quick=True, all_models=False)
+        elif args.mode == 'validate':
+            log.info("Validating results")
+            model_predictor = ModelPredictor()
+            model_predictor.evaluate_models(val_df.drop('isFraud', axis=1), val_df['isFraud'], type='validation')
             
     except Exception as e:
         log.error(f"An error occurred: {str(e)}")
