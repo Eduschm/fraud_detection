@@ -57,6 +57,8 @@ def test_validation_split(df, validation_size=0.1, random_state=42):
     try:
         train_val_df, test_df = train_test_split(df, random_state=random_state)
         log.info(f"Data split completed: {len(train_val_df)} training samples, {len(test_df)} validation samples.")
+        #Save validation set
+        test_df.to_csv('data/validation_set.csv', index=False)
         return  train_val_df, test_df
     except Exception as e:
         log.error(f"An error occurred during data splitting: {str(e)}")
