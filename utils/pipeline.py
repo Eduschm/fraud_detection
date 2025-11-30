@@ -71,13 +71,11 @@ def get_pipeline(cat_features, num_features, all_models=True,):
 
     'RandomForest': Pipeline([
         ('preprocessor', preprocessor),
-        ('scaler', StandardScaler()),
         ('classifier', RandomForestClassifier(random_state=42))
     ]),
 
     'XGBClassifier': Pipeline([
         ('preprocessor', preprocessor),
-        ('scaler', StandardScaler()),
         ('classifier', XGBClassifier(use_label_encoder=False, eval_metric='logloss'))
     ])
 }
