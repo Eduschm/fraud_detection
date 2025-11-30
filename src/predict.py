@@ -29,7 +29,7 @@ class ModelPredictor():
         y_pred = model.predict(X)
         return y_pred
     
-    def evaluate_models(self, X_test, y_test):
+    def evaluate_models(self, X_test, y_test, type='evaluate'):
         """Evaluate all models in the 'models' directory on the provided test data.
         Args:
             X_test (DataFrame): Test features.
@@ -67,6 +67,6 @@ class ModelPredictor():
             print(report)
         
         # save results to json
-        with open('results/evaluation_results.json', 'w') as f:
+        with open(f'models/results/{type}_results.json', 'w') as f:
             json.dump(self.results, f, indent=4)
         return self.results
