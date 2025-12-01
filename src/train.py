@@ -40,7 +40,7 @@ def train(X_train, y_train, quick=False, all_models=True):
 
             # Save best params for model 
             log.info(f"Storing best model and CV results for {name}...")
-            joblib.dump(grid_search.best_params_ f"models/{name}_params.pkl")
+            joblib.dump(grid_search.best_params_, f"models/{name}_params.pkl")
 
             best_models[name] = grid_search.best_estimator_
             cv_results[name] = {

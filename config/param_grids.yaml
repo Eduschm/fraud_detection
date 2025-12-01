@@ -2,11 +2,15 @@ LogisticRegression:
   classifier__C: [100, 1000, 10000]
   classifier__solver: ["lbfgs", "liblinear"]
   feature_selection__k: [8, "all"]
+  classifier__class_weight: ["balanced"]
 
 RandomForest:
   classifier__n_estimators: [50, 75]
   classifier__max_depth: [20, 25]
   classifier__min_samples_split: [4, 5]
+  classifier__min_samples_leaf: [2, 3]
+  feature_selection__k: [10, "all"]
+  classifier__class_weight: ["balanced"]
 
 XGBClassifier:
   classifier__n_estimators: [500, 700]
@@ -17,3 +21,4 @@ XGBClassifier:
   classifier__min_child_weight: [0.5, 1]
   classifier__gamma: [0, 1]
   classifier__scale_pos_weight: [80, 100, 120]
+

@@ -1,16 +1,6 @@
 from fastapi import FastAPI
 from src.predict import ModelPredictor
 import pandas as pd
-from utils.load_data import load_data
-class FraudDetectionApp:
-    def __init__(self, query_params: dict = None):
-        a = 1 # Placeholder to avoid empty constructor
-
-        
-    def predict(self, query_params):
-        query_params = pd.DataFrame([query_params])
-        X = load_data(query_params, predict=True)
-        return ModelPredictor().evaluate(X)
 
 app = FastAPI()
 
