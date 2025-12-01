@@ -26,6 +26,8 @@ def load_data(X=None, data_path='data/fraud_data.csv', n_rows=None):
     log.info("Preparing features and target variable...")
     try:
         df = pd.read_csv(data_path) if not n_rows else pd.read_csv(data_path, nrows=n_rows)
+        # Shuffle df
+        df = df.sample(frac=1, random_state=42).reset_index(drop=True)
         return df
     except Exception as e:
         log.error(f"An error occurred while loading data: {str(e)}")
