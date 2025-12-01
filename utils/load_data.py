@@ -28,6 +28,7 @@ def load_data(X=None, data_path='data/fraud_data.csv', n_rows=None):
         df = pd.read_csv(data_path) if not n_rows else pd.read_csv(data_path, nrows=n_rows)
         # Shuffle df
         df = df.sample(frac=1, random_state=42).reset_index(drop=True)
+        df = transform_data(df)
         return df
     except Exception as e:
         log.error(f"An error occurred while loading data: {str(e)}")
@@ -90,3 +91,23 @@ def get_feature_type(df):
     except Exception as e:
         log.error(f"An error occurred while identifying feature types: {str(e)}")
         raise e
+
+def transform_data(df):
+    ''' Transform the DataFrame for fitting into the model pipeline.
+    args:
+        df: DataFrame
+            The dataset to transform.
+    returns:
+        df: DataFrame 
+    raises: Exception
+        If there is an error during data transformation.
+    '''
+    log = Logger(name="DataTransformer", level="INFO").get()
+    log.info("Transforming data ...")
+    try:
+        df.drop(columns=['step', 'nameDest', 'nameOrig', 'isFlaggedFraud'], inplace=True, errors='ignore')
+        return df
+    except Exception as e:
+        log.error(f"An error occurred while transforming data: {str(e)}")
+        raise e
+

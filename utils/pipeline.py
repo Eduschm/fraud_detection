@@ -44,8 +44,7 @@ def random_search_cv(X_train, y_train, model, model_name, quick=False):
             param_distributions=param_grids[model_name], 
             verbose=1, 
             n_jobs=-1, 
-            scoring=['recall', 'f1', 'precision'],
-            refit='f1', 
+            scoring='recall',
             n_iter=20 if not quick else 5, 
             random_state=42)
         # Model fit
@@ -95,7 +94,6 @@ def get_pipeline(cat_features, num_features, all_models=True,):
     'XGBClassifier': Pipeline([
         ('preprocessor', preprocessor),
         ('feature_selection', SelectKBest(f_classif)),
-        ('smote', SMOTE(random_state=42, k_neighbors=3)),
         ('classifier', XGBClassifier(use_label_encoder=False, eval_metric='logloss'))
     ])
 }

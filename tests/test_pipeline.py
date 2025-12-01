@@ -13,8 +13,8 @@ def test_load_data_returns_dataframe(df):
 
 def test_load_data_has_required_columns(df):
     required_columns = [
-        'step', 'type', 'amount', 'nameOrig', 'oldbalanceOrg',
-        'newbalanceOrig', 'nameDest', 'oldbalanceDest', 'newbalanceDest'
+        'type', 'amount', 'oldbalanceOrg',
+        'newbalanceOrig', 'oldbalanceDest', 'newbalanceDest'
     ]
     for col in required_columns:
         assert col in df.columns

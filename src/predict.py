@@ -65,8 +65,5 @@ class ModelPredictor():
             print(f"{file.replace('.pkl', '')} Recall: {recall:.4f}, f1: {f1}")
             print(conf_matrix)
             print(report)
-        
-        # save results to json
-        with open(f'models/results/{type}_results.json', 'w') as f:
-            json.dump(self.results, f, indent=4)
         return self.results
+        
