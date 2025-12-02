@@ -44,7 +44,7 @@ class ModelPredictor():
             model = joblib.load(f"models/{file}")
             log.info(f"Calculating metrics for model: {file}")
             self.predict_model(model, X_test, y_test, file)
-            return self.results
+        return self.results
 
             
 

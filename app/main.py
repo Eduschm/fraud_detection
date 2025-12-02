@@ -5,7 +5,7 @@ import pandas as pd
 app = FastAPI()
 
 
-sample_data = pd.read_csv('data/sample_data.csv')
+sample_data = pd.read_csv('data/validation_set.csv')
 
 @app.get("/")
 def status():
@@ -17,5 +17,10 @@ def predict(query_params):
 
 @app.get("/get_samples")
 def get_samples():
-    samples = sample_data.sample(n=5).to_dict(orient='records')
-    return {"samples": samples}
+    samples = sample_data.sample(n=1000).drop('isFraud', axis=1)
+    print(samples)
+    y_pred = predict(samples)
+    samples['isFraud_Prediction'] = y_pred
+    # Create samples csv if not exists
+    
+    return samples

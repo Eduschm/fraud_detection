@@ -1,8 +1,7 @@
-from app.main import FraudDetectionApp
+from app.main import predict, status, get_samples
 import streamlit as st
 import json
 
-app_instance = FraudDetectionApp()
 
 # Theme
 def set_custom_css():
@@ -45,7 +44,7 @@ st.markdown("---")
 # Sidebar for navigation
 with st.sidebar:
     st.header("Menu")
-    page = st.radio("Select Option", ["Dashboard", "Make Prediction", "View Samples"])
+    page = st.radio("Select Option", ["Dashboard", "Make Prediction"])
 
 if page == "Dashboard":
     st.header("System Status")
@@ -57,46 +56,14 @@ if page == "Dashboard":
     with col3:
         st.metric("API", "Ready")
 
-elif page == "View Samples":
-    st.header("Sample Data")
-    if st.button("Generate Sample"):
-        samples = app_instance.sample_data.sample(n=5)
-        st.success("Samples Generated!")
-        st.dataframe(samples, use_container_width=True)
-
 elif page == "Make Prediction":
     st.header("Fraud Detection Prediction")
-    
-    # Get sample data for reference
-    sample_cols = st.columns(2)
-    with sample_cols[0]:
-        if st.button("Load Sample"):
-            sample = app_instance.sample_data.sample(n=1).iloc[0]
-            st.json(sample.to_dict())
-    
-    # Input section
-    with st.form("prediction_form"):
-        st.write("Enter transaction details:")
-        transaction_data = st.text_area("Transaction Data (JSON format)", height=150)
-        submitted = st.form_submit_button("🔍 Predict")
+    if st.button("Load Sample"):
+        sample = get_samples().reset_index(drop=True)
+        st.success("Sample Loaded!")
+        st.dataframe(sample, use_container_width=False)
         
-        if submitted:
-            with st.spinner("Analyzing transaction..."):
-                try:
-                    # Validate JSON format
-                    if not transaction_data.strip():
-                        st.error("Error: Input cannot be empty.")
-                    else:
-                        X = json.loads(transaction_data)
-                    result = app_instance.predict(X)
-                    st.success("Prediction Complete!")
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        st.metric("Risk Level", result.get("risk", "N/A"))
-                    with col2:
-                        st.metric("Confidence", f"{result.get('confidence', 0):.2%}")
-                except Exception as e:
-                    st.error(f"Error: {str(e)}")
+        
 
 # run app_instance.app.run()
 

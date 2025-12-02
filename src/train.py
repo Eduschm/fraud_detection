@@ -3,6 +3,7 @@ from utils.pipeline import random_search_cv
 import joblib
 from utils.logger import Logger
 from utils.load_data import get_feature_type
+from sklearn.ensemble import VotingClassifier
 
 def train(X_train, y_train, quick=False, all_models=True):
     """Train machine learning models using RandomizedSearchCV and save the best models.
@@ -48,6 +49,14 @@ def train(X_train, y_train, quick=False, all_models=True):
                 'best_score_cv': grid_search.best_score_,
                 'all_cv_results': grid_search.cv_results_
             }
+        voting_clf = VotingClassifier(
+            estimators=[(name, model) for name, model in best_models.items()],
+            voting='soft'
+        )
+        voting_clf.fit(X_train, y_train)
+        joblib.dump(voting_clf, "models/VotingClassifier.pkl")
+        best_models['VotingClassifier'] = voting_clf
+
 
     except Exception as e:
         log.error(f"An error occurred during model training: {str(e)}")
