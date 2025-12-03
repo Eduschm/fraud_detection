@@ -16,7 +16,7 @@ The dataset is highly imbalanced (typical for fraud), which made it a good learn
 
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/fraud-detection.git
+git clone https://github.com/eduschm/fraud-detection.git
 cd fraud-detection
 
 # Install dependencies
