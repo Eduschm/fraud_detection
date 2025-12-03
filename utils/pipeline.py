@@ -78,13 +78,6 @@ def get_pipeline(cat_features, num_features, all_models=True,):
 
     pipelines =  {
 
-    'RandomForest': Pipeline([
-        ('preprocessor', preprocessor),
-        ('feature_selection', SelectKBest(f_classif)),
-        ('smote', SMOTE(random_state=42, k_neighbors=3)),
-        ('classifier', RandomForestClassifier(random_state=42))
-    ]),
-
     'XGBClassifier': Pipeline([
         ('preprocessor', preprocessor),
         ('feature_selection', SelectKBest(f_classif)),

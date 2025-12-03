@@ -62,7 +62,7 @@ class ModelPredictor():
             array: Predicted labels.
         """
         # Predicts with trained model, adjusting the thresholld to 0.25
-        threshold = 0.05
+        threshold = 0.10
         y_proba = model.predict_proba(X_test)[:, 1]
         y_pred = (y_proba >= threshold).astype(int)
 

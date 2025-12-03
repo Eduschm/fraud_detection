@@ -105,7 +105,10 @@ def transform_data(df):
     log = Logger(name="DataTransformer", level="INFO").get()
     log.info("Transforming data ...")
     try:
-        df.drop(columns=['step', 'nameDest', 'nameOrig', 'isFlaggedFraud'], inplace=True, errors='ignore')
+        df.drop(columns=['nameDest', 'nameOrig', 'isFlaggedFraud'], inplace=True, errors='ignore')
+        df['hour'] = (df['step'] % 24).astype('category')
+        df['day'] = ((df['step'] // 24) % 7).astype('category')
+        df['week'] = (df['step'] // (24 * 7)).astype('category')
         return df
     except Exception as e:
         log.error(f"An error occurred while transforming data: {str(e)}")
