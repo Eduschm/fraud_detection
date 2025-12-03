@@ -77,12 +77,6 @@ def get_pipeline(cat_features, num_features, all_models=True,):
 )
 
     pipelines =  {
-    'LogisticRegression': Pipeline([
-        ('preprocessor', preprocessor),
-        ('feature_selection', SelectKBest(f_classif)),
-        ('smote', SMOTE(random_state=42, k_neighbors=3)),
-        ('classifier', LogisticRegression(random_state=42, max_iter=1000))
-    ]),
 
     'RandomForest': Pipeline([
         ('preprocessor', preprocessor),
@@ -96,6 +90,7 @@ def get_pipeline(cat_features, num_features, all_models=True,):
         ('feature_selection', SelectKBest(f_classif)),
         ('classifier', XGBClassifier(use_label_encoder=False, eval_metric='logloss'))
     ])
+    
 }
     if not all_models:
         pipelines = {

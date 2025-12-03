@@ -4,6 +4,8 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 from utils.logger import Logger
 import json
 
+
+
 class ModelPredictor():
     """
     ModelPredictor is a utility class for loading trained machine learning models and making predictions or evaluating their performance.
@@ -59,8 +61,11 @@ class ModelPredictor():
         Returns:
             array: Predicted labels.
         """
-        # Predicts with trained model, adjusting the threshold to 0.3
-        y_pred = model.predict(X_test)
+        # Predicts with trained model, adjusting the thresholld to 0.25
+        threshold = 0.05
+        y_proba = model.predict_proba(X_test)[:, 1]
+        y_pred = (y_proba >= threshold).astype(int)
+
         # Calculate metrics
         
         f1 = f1_score(y_test, y_pred)

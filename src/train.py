@@ -1,9 +1,12 @@
+from sklearn.calibration import CalibratedClassifierCV
 from utils.pipeline import get_pipeline
 from utils.pipeline import random_search_cv
 import joblib
 from utils.logger import Logger
 from utils.load_data import get_feature_type
 from sklearn.ensemble import VotingClassifier
+from sklearn.calibration import CalibratedClassifierCV
+from xgboost import XGBClassifier
 
 def train(X_train, y_train, quick=False, all_models=True):
     """Train machine learning models using RandomizedSearchCV and save the best models.
@@ -49,10 +52,27 @@ def train(X_train, y_train, quick=False, all_models=True):
                 'best_score_cv': grid_search.best_score_,
                 'all_cv_results': grid_search.cv_results_
             }
+        
+        xgb = best_models.get('XGBClassifier')
+        # Calibrate XGBClassifier
+        log.info("Calibrating XGBClassifier...")
+        calibrated_xgb = CalibratedClassifierCV(
+        estimator=xgb,
+        cv=3,                 
+        method='isotonic',
+    )
+        log.info("Fitting calibrated XGBClassifier...")
+        calibrated_xgb.fit(X_train, y_train)
+        joblib.dump(calibrated_xgb, "models/Calibrated_XGBClassifier.pkl")
+        best_models['Calibrated_XGBClassifier'] = calibrated_xgb
+
+    
+
         voting_clf = VotingClassifier(
-            estimators=[(name, model) for name, model in best_models.items()],
-            voting='soft'
-        )
+            estimators=[(name, model) for name, model in best_models.items() if name 
+                        != 'VotingClassifier' and name != 'LogisticRegression'],
+            voting='soft')
+        
         voting_clf.fit(X_train, y_train)
         joblib.dump(voting_clf, "models/VotingClassifier.pkl")
         best_models['VotingClassifier'] = voting_clf
